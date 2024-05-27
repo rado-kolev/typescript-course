@@ -1,5 +1,7 @@
 // *****************************************************************************
-// TODO ----> For contrast comments is used the extension Better Comments  <----
+// ! All credits for this course go to John Smilga: https://github.com/john-smilga
+
+// TODO ----> For contrast comments is used the VS Code extension Better Comments
 // *****************************************************************************
 
 
@@ -89,7 +91,7 @@ requestStatus = 'error';
 
 let notSure: any = 4;
 notSure = 'maybe a string instead';
-notSure = false; //* okay, definitely a boolean :)
+notSure = true; //* okay, definitely a boolean :)
 
 
 
@@ -179,3 +181,275 @@ let colors: string[] = ['red', 'green', 'blue'];
 let mixedArray: (number | string)[] = [1, 'two', 3];
 
 // mixedArray.push(true); //! This will result in a TypeScript error
+
+
+
+// ! *** Objects - Fundamentals ***
+// ?  An object is a collection of key-value pairs with specified types for each key, providing static type checking for properties.
+
+let car: { brand: string; year: number } = { brand: 'toyota', year: 2020 };
+car.brand = 'ford';
+// car.color = 'blue'; //! This will result in a TypeScript error
+
+let car1: { brand: string; year: number } = { brand: 'audi', year: 2021 };
+// let car2: { brand: string; year: number } = { brand: 'audi' }; //! This will result in a TypeScript error
+
+let book = { title: 'book', cost: 20 };
+let pen = { title: 'pen', cost: 5 };
+let notebook = { title: 'notebook' };
+
+let items: { readonly title: string; cost?: number }[] = [book, pen, notebook];
+
+// items[0].title = 'new book'; //! Error: Cannot assign to 'title' because it is a read-only property
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Create an object bike of type { brand: string, year: number } and assign it some values. Then, try to assign a string to the year property.
+//* 2. Create an object laptop of type { brand: string, year: number } and try to assign an object with missing year property to it.
+//* 3. Create an array products of type { title: string, price?: number }[] and assign it some values. Then, try to add an object with a price property of type string to it.
+
+// TODO 1. Bike
+let bike: { brand: string; year: number } = { brand: 'Yamaha', year: 2010 };
+
+// bike.year = 'old'; //! This will result in a TypeScript error
+
+// TODO 2. Laptop
+let laptop: { brand: string; year: number } = { brand: 'Dell', year: 2020 };
+
+// let laptop2: { brand: string, year: number } = { brand: 'HP' }; //! This will result in a TypeScript error
+
+// TODO 3. Products
+let product1 = { title: 'Shirt', price: 20 };
+let product2 = { title: 'Pants' };
+let products: { title: string; price?: number }[] = [product1, product2];
+
+// products.push({ title: 'Shoes', price: 'expensive' }); //! This will result in a TypeScript error
+
+
+
+// ! *** Functions - Fundamentals ***
+// ? Functions can have typed parameters and return values, which provides static type checking and autocompletion support.
+
+function sayHi(name: string) {
+  console.log(`Hello there ${name.toUpperCase()}!!!`);
+}
+
+sayHi('john');
+// sayHi(3) //! This will result in a TypeScript error
+// sayHi('peter', 'random'); //! This will result in a TypeScript error
+
+function calculateDiscount(price: number): number {
+  // price.toUpperCase(); //! This will result in a TypeScript error
+  const hasDiscount = true;
+  if (hasDiscount) {
+    return price;
+    // return 'Discount Applied'; //! This will result in a TypeScript error
+  }
+  return price * 0.9;
+}
+
+const finalPrice = calculateDiscount(200);
+console.log(finalPrice);
+
+// "any" example
+function addThree(number: any) {
+  let anotherNumber: number = 3;
+  return number + anotherNumber;
+}
+const result = addThree(2);
+const someValue = result;
+
+// run time error
+// someValue.myMethod(); //! This will result in a TypeScript error
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Create a new array of names.
+//* 2. Write a new function that checks if a name is in your array. This function should take a name as a parameter and return a boolean.
+//* 3. Use this function to check if various names are in your array and log the results.
+
+//  TODO 1. Names
+const names: string[] = ['John', 'Jane', 'Jim', 'Jill'];
+
+//  TODO 2. Create function
+function isNameInList(name: string): boolean {
+  return names.includes(name);
+}
+
+//  TODO 3. Use function
+let nameToCheck: string = 'Jane';
+if (isNameInList(nameToCheck)) {
+  console.log(`${nameToCheck} is in the list.`);
+} else {
+  console.log(`${nameToCheck} is not in the list.`);
+}
+
+
+
+// ! *** Functions - Optional and Default Parameters ***
+// ? A default parameter value is an alternative to an optional parameter. When you provide a default value for a parameter, you're essentially making it optional because you're specifying a value that the function will use if no argument is provided for that parameter.
+
+// ? However, there's a key difference between a parameter with a default value and an optional parameter. If a parameter has a default value, and you call the function without providing an argument for that parameter, the function will use the default value. But if a parameter is optional (indicated with a ?), and you call the function without providing an argument for that parameter, the value of the parameter inside the function will be undefined.
+
+// !!! A function with optional parameters must work when they are not supplied
+
+function calculatePrice(price: number, discount?: number) {
+  return price - (discount || 0);
+}
+
+let priceAfterDiscount = calculatePrice(100, 20);
+console.log(priceAfterDiscount); //* Output: 80
+
+let priceWithoutDiscount = calculatePrice(300);
+console.log(priceWithoutDiscount); //* Output: 300
+
+function calculateScore(initialScore: number, penaltyPoints: number = 0) {
+  return initialScore - penaltyPoints;
+}
+
+let scoreAfterPenalty = calculateScore(100, 20);
+console.log(scoreAfterPenalty); //* Output: 80
+
+let scoreWithoutPenalty = calculateScore(300);
+console.log(scoreWithoutPenalty); //* Output: 300
+
+
+
+// ! *** Functions - rest parameter ***
+// ? A rest parameter is denoted by three dots (...) before the parameter's name and allows a function to accept any number of arguments. These arguments are collected into an array, which can be accessed within the function.
+
+function sum(message: string, ...numbers: number[]): string {
+  const doubled = numbers.map((num) => num * 2);
+  console.log(doubled);
+
+  let total = numbers.reduce((previous, current) => {
+    return previous + current;
+  }, 0);
+  return `${message} ${total}`;
+}
+
+let result1 = sum('The total is:', 1, 2, 3, 4, 5); //* result will be "The total is: 15"
+
+
+
+// ! *** Functions - "void" return type ***
+// ? Void is a special type that represents the absence of a value. When used as a function return type, void indicates that the function does not return a value.
+
+function logMessage(message: string): void {
+  console.log(message);
+}
+
+logMessage('Hello, TypeScript!'); // Output: Hello, TypeScript!
+
+// !!! It's important to note that in TypeScript, a function that is declared with a void return type can still return a value, but the value will be ignored. For example, the following code is valid TypeScript:
+
+function logMessage1(message: string): void {
+  console.log(message);
+  // return 'This value is ignored'; //! Type 'string' is not assignable to type 'void'
+}
+
+logMessage1('Hello, TypeScript!'); // Output: Hello, TypeScript!
+
+
+
+// ! *** Functions - Using Union Types as Function Parameters ***
+
+//* A function that accepts a parameter of a union type string | number
+function processInput(input: string | number) {
+  if (typeof input === 'number') {
+    console.log(input * 2);
+  } else {
+    console.log(input.toUpperCase());
+  }
+}
+
+processInput(10); // Output: 20
+processInput('Hello'); // Output: HELLO
+
+//* The processInput function takes a parameter input that can be either a string or a number. Inside the function, we use a type guard (typeof input === 'number') to check the type of input at runtime. If input is a number, we double it. If input is a string, we convert it to uppercase.
+
+
+
+// ! *** Functions - Using Objects as Function Parameters ***
+
+function createEmployee({ id }: { id: number }): {
+  id: number;
+  isActive: boolean;
+} {
+  return { id, isActive: id % 2 === 0 };
+}
+
+const first = createEmployee({ id: 1 });
+const second = createEmployee({ id: 2 });
+console.log(first, second);
+
+//* alternative
+function createStudent(student: { id: number; name: string }) {
+  console.log(`Welcome to the course ${student.name.toUpperCase()}!`);
+}
+
+const newStudent = {
+  id: 5,
+  name: 'Anna',
+};
+
+createStudent(newStudent);
+
+
+
+// ! *** Gotcha - Excess Property Checks ***
+// ? TypeScript only performs excess property checks on object literals where they're used, not on references to them.
+
+function createStudent1(student: { id: number; name: string }) {
+  console.log(`Welcome to the course ${student.name.toUpperCase()}!`);
+}
+
+const newStudent1 = {
+  id: 5,
+  name: 'Anna',
+  email: 'anna@gmail.com',
+};
+
+//* When you pass an object literal (like { id: 1, name: 'bob', email: 'bob@gmail.com' }) directly to a function or assign it to a variable with a specified type, TypeScript checks that the object only contains known properties. This is done to catch common errors.
+
+createStudent1({ id: 1, name: 'Bob', email: 'bob@gmail.com' });
+
+
+//* However, when you pass newStudent to createStudent, TypeScript doesn't complain about the email property. This is because newStudent is not an object literal at the point where it's passed to createStudent.
+
+createStudent1(newStudent1);
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Create a function named processData that accepts two parameters:
+  //* 1.1. The first parameter, input, should be a union type that can be either a string or a number.
+  //* 1.2. The second parameter, config, should be an object with a reverse property of type boolean, by default it "reverse" should be false.
+  
+//* 2. The function should behave as follows:
+  //* 2.1. If input is of type number, the function should return the square of the number.
+  //* 2.2. If input is of type string, the function should return the string in uppercase.
+  //* 2.3. If the reverse property on the config object is true, and input is a string, the function should return the reversed string in uppercase.
+  
+// TODO
+function processData(
+  input: string | number,
+  config: {reverse: boolean} = {reverse: false}
+): string | number {
+  if (typeof input === 'number') {
+    return input ** 2;
+  } else {
+    return config.reverse
+      ? input.toUpperCase()
+      : input.toUpperCase().split('').reverse().join('');
+  }
+}
+
+console.log(processData(10)); // Output: 100
+console.log(processData('Hello')); // Output: HELLO
+console.log(processData('Hello', { reverse: true })); // Output: OLLEH
