@@ -416,7 +416,7 @@ const newStudent1 = {
 
 //* When you pass an object literal (like { id: 1, name: 'bob', email: 'bob@gmail.com' }) directly to a function or assign it to a variable with a specified type, TypeScript checks that the object only contains known properties. This is done to catch common errors.
 
-createStudent1({ id: 1, name: 'Bob', email: 'bob@gmail.com' });
+//? createStudent1({ id: 1, name: 'Bob', email: 'bob@gmail.com' });
 
 
 //* However, when you pass newStudent to createStudent, TypeScript doesn't complain about the email property. This is because newStudent is not an object literal at the point where it's passed to createStudent.
@@ -445,8 +445,8 @@ function processData(
     return input ** 2;
   } else {
     return config.reverse
-      ? input.toUpperCase()
-      : input.toUpperCase().split('').reverse().join('');
+      ? input.toUpperCase().split('').reverse().join('')
+      : input.toUpperCase();
   }
 }
 
