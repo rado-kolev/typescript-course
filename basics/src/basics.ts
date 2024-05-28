@@ -453,3 +453,193 @@ function processData(
 console.log(processData(10)); // Output: 100
 console.log(processData('Hello')); // Output: HELLO
 console.log(processData('Hello', { reverse: true })); // Output: OLLEH
+
+
+
+// ! *** Type Alias ***
+// ? A type alias in TypeScript is a new name or shorthand for an existing type, making it easier to reuse complex types. However, it's important to note that it doesn't create a new unique type - it's just an alias.All the same rules apply to the aliased type, including the ability to mark properties as optional or readonly.
+
+// const john: { id: number; name: string; isActive: boolean } = {
+//   id: 1,
+//   name: 'john',
+//   isActive: true,
+// };
+
+// const susan: { id: number; name: string; isActive: boolean } = {
+//   id: 1,
+//   name: 'susan',
+//   isActive: false,
+// };
+
+// function createUser(user: { id: number; name: string; isActive: boolean }): {
+//   id: number;
+//   name: string;
+//   isActive: boolean;
+// } {
+//   console.log(`Hello there ${user.name.toUpperCase()} !!!`);
+
+//   return user;
+// }
+
+
+//* The code above written with type alias
+
+type User = { id: number; name: string; isActive: boolean };
+
+const john: User = {
+  id: 1,
+  name: 'john',
+  isActive: true,
+};
+const susan: User = {
+  id: 1,
+  name: 'susan',
+  isActive: false,
+};
+
+function createUser(user: User): User {
+  console.log(`Hello there ${user.name.toUpperCase()} !!!`);
+  return user;
+}
+
+
+//* another example
+
+type StringOrNumber = string | number; // Type alias for string | number
+
+let value: StringOrNumber;
+value = 'hello'; // This is valid
+value = 123; // This is also valid
+
+
+//* one more example
+
+type Theme = 'light' | 'dark'; // Type alias for theme
+
+let theme: Theme;
+theme = 'light'; // This is valid
+theme = 'dark'; // This is also valid
+
+// Function that accepts the Theme type alias
+function setTheme(t: Theme) {
+  theme = t;
+}
+
+setTheme('dark'); // This will set the theme to 'dark'
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Define the Employee type: Create a type Employee with properties id (number), name (string), and department (string).
+
+//* 2. Define the Manager type: Create a type Manager with properties id (number), name (string), and employees (an array of Employee).
+
+//* 3. Create a Union Type: Define a type Staff that is a union of Employee and Manager.
+
+//* 4. Create the printStaffDetails function: This function should accept a parameter of type Staff. Inside the function, use a type guard to check if the 'employees' property exists in the passed object. If it does, print a message indicating that the person is a manager and the number of employees they manage. If it doesn't, print a message indicating that the person is an employee and the department they belong to.
+
+//* 5. Create Employee and Manager objects: Create two Employee objects. One named alice and second named steve. Also create a Manager object named bob who manages alice and steve.
+
+//* 6. Test the function: Call the printStaffDetails function with alice and bob as arguments and verify the output.
+
+// TODO 1. Employee type
+
+type Employee = {
+  id: number;
+  name: string;
+  department: string;
+};
+
+
+// TODO 2. Manager type
+
+type Manager = {
+  id: number;
+  name: string;
+  employees: Employee[];
+};
+
+
+// TODO 3. Staff type
+
+type Staff = Employee | Manager;
+
+
+// TODO 4. printStaffDetails function
+
+function printStaffDetails(staff: Staff) {
+  if ('employees' in staff) {
+    console.log(
+      `Manager ${staff.name} manages ${staff.employees.length} employees.`
+    );
+  } else {
+    console.log(`Employee ${staff.name} works in ${staff.department} department.`);
+  }
+}
+
+
+// TODO 5. Employee and Manager objects
+
+const alice: Employee = {
+  id: 1,
+  name: 'Alice',
+  department: 'Sales'
+}
+
+const steve: Employee = {
+  id: 2,
+  name: 'Steve',
+  department: 'Engineering'
+}
+
+const bob: Manager = {
+  id: 3,
+  name: 'Bob',
+  employees: [alice, steve]
+}
+
+
+// TODO 6. Test the function
+
+printStaffDetails(alice); // Output: Employee Alice works in Sales department.
+printStaffDetails(bob); // Output: Manager Bob manages 2 employees.
+
+
+
+// ! *** Type Alias - Intersection Types ***
+// ? An intersection type (TypeA & TypeB) is a way of combining multiple types into one. This means that an object of an intersection type will have all the properties of TypeA and all the properties of TypeB. It's a way of creating a new type that merges the properties of existing types.
+
+type Book = { id: number; name: string; price: number };
+type DiscountedBook = Book & { discount: number };
+const book1: Book = {
+  id: 2,
+  name: 'How to Cook a Dragon',
+  price: 15,
+};
+
+const book2: Book = {
+  id: 3,
+  name: 'The Secret Life of Unicorns',
+  price: 18,
+};
+
+const discountedBook: DiscountedBook = {
+  id: 4,
+  name: 'Gnomes vs. Goblins: The Ultimate Guide',
+  price: 25,
+  discount: 0.15,
+};
+
+
+
+// ! *** Type Alias - Computed Properties ***
+// ? Computed properties in JavaScript are a feature that allows you to dynamically create property keys on objects. This is done by wrapping an expression in square brackets [] that computes the property name when creating an object.
+
+const propName = 'age';
+
+type Animal = {
+  [propName]: number;
+};
+
+let tiger: Animal = { [propName]: 5 };
