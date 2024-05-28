@@ -643,3 +643,405 @@ type Animal = {
 };
 
 let tiger: Animal = { [propName]: 5 };
+
+
+
+// ! *** Interface - Fundamentals ***
+// ? Allows to setup a shape for objects (only objects)
+
+interface Book2 {
+  readonly isbn: number;
+  title: string;
+  author: string;
+  genre?: string;
+}
+
+const deepWork: Book2 = {
+  isbn: 9781455586691,
+  title: 'Deep Work',
+  author: 'Cal Newport',
+  genre: 'Self-help',
+};
+
+deepWork.title = 'New Title'; //* allowed
+// deepWork.isbn = 654321; //* not allowed
+
+
+
+// ! *** Interface - Methods ***
+
+interface Book3 {
+  readonly isbn: number;
+  title: string;
+  author: string;
+  genre?: string;
+
+  // method
+  printAuthor(): void;
+  printTitle(message: string): string;
+}
+
+const deepWork1: Book3 = {
+  isbn: 9781455586691,
+  title: 'Deep Work',
+  author: 'Cal Newport',
+  genre: 'Self-help',
+  printAuthor() {
+    console.log(this.author);
+  },
+  printTitle(message) {
+    return `${this.title} ${message}`;
+  },
+};
+deepWork1.printAuthor();
+const result3 = deepWork1.printTitle('is an awesome book!');
+console.log(result3);
+
+
+
+// ! *** Interface - Methods (more options) ***
+// ? It's generally a good practice to match the structure of the interface and the implementing object or class as closely as possible. This makes the code easier to understand and maintain. So, if printAuthor is defined as a method in the Book interface, it would be more consistent to implement it as a method in the deepWork object.
+
+interface Book4 {
+  readonly isbn: number;
+  title: string;
+  author: string;
+  genre?: string;
+
+  // method
+  printAuthor(): void;
+  printTitle(message: string): string;
+
+  printSomething: (someValue: number) => number;
+}
+
+const deepWork2: Book4 = {
+  isbn: 9781455586691,
+  title: 'Deep Work',
+  author: 'Cal Newport',
+  genre: 'Self-help',
+  printAuthor() {
+    console.log(this.author);
+  },
+  printTitle(message) {
+    return `${this.title} ${message}`;
+  },
+
+  //* first option
+  // printSomething: function (someValue) {
+  //   return someValue;
+  // },
+
+  //* second option
+  printSomething: (someValue) => {
+    // "this" gotcha
+    console.log(deepWork2.author);
+    return someValue;
+  },
+
+  //* third option
+  // printSomething(someValue) {
+  //   return someValue;
+  // },
+
+  //* alternative
+  // printAuthor: () => {
+  //   console.log(deepWork.author);
+  // },
+};
+
+console.log(deepWork2.printSomething(34));
+
+deepWork2.printAuthor();
+const result4 = deepWork2.printTitle('is an awesome book!');
+console.log(result4);
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Start by defining an interface Computer using the interface keyword. This will serve as a blueprint for objects that will be of this type.
+  //* 1.1. Inside the interface, define the properties that the object should have. In this case, we have id, brand, ram, and storage.
+  //* 1.2. Use the readonly keyword before the id property to indicate that it cannot be changed once it's set.
+  //* 1.3. Use the ? after the storage property to indicate that this property is optional and may not exist on all objects of this type.
+  //* 1.4. Also inside the interface, define any methods that the object should have. In this case, we have upgradeRam, which is a function that takes a number and returns a number.
+
+//* 2. Now that we have our interface, we can create an object that adheres to this interface. This object should have all the properties defined in the interface (except for optional ones, which are... optional), and the methods should be implemented.
+
+//* 3. Finally, we can use our object. We can call its upgradeRam method to increase its RAM.
+
+// TODO 1. Define an interface Computer
+
+interface Computer {
+  readonly id: number,
+  brand: string,
+  ram: number,
+  storage?: number,
+  upgradeRam(value: number): number
+}
+
+
+// TODO 2. Create an object
+
+const pc: Computer = {
+  id: 1,
+  brand: 'Dell',
+  ram: 16, // in GB
+  upgradeRam(value: number) {
+    return this.ram += value;
+  }
+}
+
+pc.storage = 512; // assigning a value to the optional storage property
+
+// TODO 3. Use the object
+
+pc.upgradeRam(16); // upgrade ram by 16GB
+
+console.log(pc); // Output: { id: 1, brand: 'Dell', ram: 32, storage: 512 }
+
+
+
+// ! *** Interface - Merging, Extend, TypeGuard ***
+
+interface Person {
+  name: string;
+  getDetails(): string;
+}
+
+interface DogOwner {
+  dogName: string;
+  getDogDetails(): string;
+}
+
+// ? Merging (reopening) an interface in TypeScript is a process where you declare an interface with the same name more than once, and TypeScript will merge their members.
+
+// Merging the interface
+interface Person {
+  age: number;
+}
+
+// Usage
+const person: Person = {
+  name: 'John',
+  age: 30,
+  getDetails() {
+    return `Name: ${this.name}, Age: ${this.age}`;
+  },
+};
+
+// ? Extending an interface in TypeScript is a way to create a new interface that inherits the properties and methods of an existing interface. You use the extends keyword to do this. When you extend an interface, the new interface will have all the members of the base interface, plus any new members that you add.
+
+// Extending the interface
+interface Employee1 extends Person {
+  employeeId: number;
+}
+
+const employee: Employee1 = {
+  name: 'jane',
+  age: 28,
+  employeeId: 123,
+  getDetails() {
+    return `Name: ${this.name}, Age: ${this.age}, Employee ID: ${this.employeeId}`;
+  },
+};
+
+// Interface multiple inheritance
+interface Manager1 extends Person, DogOwner {
+  managePeople(): void;
+}
+
+const manager: Manager1 = {
+  name: 'Bob',
+  age: 35,
+  dogName: 'Rex',
+  getDetails() {
+    return `Name: ${this.name}, Age: ${this.age}`;
+  },
+  getDogDetails() {
+    return `Dog Name: ${this.dogName}`;
+  },
+  managePeople() {
+    console.log('Managing people...');
+  },
+};
+
+
+
+// TODO *** *** Challenge *** ***
+
+//* 1. Define a Person interface with a name property of type string.
+
+//* 2. Define a DogOwner interface that extends Person and adds a dogName property of type string.
+
+//* 3. Define a Manager interface that extends Person and adds two methods: managePeople and delegateTasks. Both methods should have a return type of void.
+
+//* 4. Define a function called getEmployee that returns a Person, DogOwner, or Manager. Inside this function, generate a random number and use it to decide which type of object to return. If the number is less than 0.33, return a Person. If it's less than 0.66, return a DogOwner. Otherwise, return a Manager.
+
+//* 5. Create a variable called employee that can be a Person, DogOwner, or Manager, and assign it the return value of getEmployee. Then, log employee to the console.
+
+// ? A type predicate in TypeScript is a special kind of return type for a function that not only returns a boolean, but also asserts that the argument is of a specific type if the function returns true. It's typically used in user-defined type guard functions to narrow down the type of a variable within a certain scope. The syntax is arg is Type, where arg is the function argument and Type is the type you're checking for.
+
+//* 6. Define a function called isManager that takes an object of type Person | DogOwner | Manager and returns a boolean. This function should check if the managePeople method exists on the object, and return true if it does and false if it doesn't. The return type of this function should be a type predicate: obj is Manager.
+
+//* 7. Run your code to see if it works as expected. If employee is a Manager, you should see the output of the delegateTasks method in the console. If employee is a Person or DogOwner, there should be no output.
+
+// TODO 1. Person interface
+
+interface Person5 {
+  name: string;
+}
+
+
+// TODO 2. DogOwner interface
+
+interface DogOwner5 extends Person5 {
+  dogName: string;
+}
+
+
+// TODO 3. Manager interface
+
+interface Manager5 extends Person5 {
+  managePeople(): void;
+  delegateTasks(): void;
+}
+
+
+// TODO 4. getEmployee function
+
+function getEmployee(): Person5 | DogOwner5 | Manager5 {
+  const random = Math.random();
+
+  if (random < 0.33) {
+    return {
+      name: 'John',
+    };
+  } else if (random < 0.66) {
+    return {
+      name: 'Sarah',
+      dogName: 'Rex',
+    };
+  } else {
+    return {
+      name: 'Bob',
+      managePeople: () => console.log('Managing people...'),
+      delegateTasks: () => console.log('Delegating tasks...'),
+    };
+  }
+}
+
+
+// TODO 5. Employee variable
+
+const employee5: Person5 | DogOwner5 | Manager5 = getEmployee();
+
+
+// TODO 6. isManager function
+
+function isManager(obj: Person5 | DogOwner5 | Manager5): obj is Manager5 {
+  return 'managePeople' in obj;
+}
+
+
+// TODO 7. Run code
+
+if (isManager(employee5)) {
+  employee5.delegateTasks();
+}
+console.log(employee5);
+
+
+
+// ! *** Interface vs Type Alias ***
+// ? A type alias is a way to give a name to a type. It can represent primitive types, union types, intersection types, tuples, and any other types. Once defined, the alias can be used anywhere in place of the actual type.
+
+type Person10 = {
+  name: string;
+  age: number;
+};
+
+let john10: Person10 = { name: 'John', age: 30 };
+
+
+// ? An interface is a way to define a contract for a certain structure of an object.
+
+interface Person11 {
+  name: string;
+  age: number;
+}
+
+let john11: Person11 = { name: 'John', age: 30 };
+
+
+//! Key Differences
+// ? Type aliases can represent primitive types, union types, intersection types, tuples, etc., while interfaces are primarily used to represent the shape of an object.
+
+// Type alias for a primitive type
+type Score = number;
+type NumberOrString = number | string;
+// Type alias for literal types
+type Direction = 'up' | 'down' | 'left' | 'right';
+
+// Using the type aliases
+let gameScore: Score = 100;
+let move: Direction = 'up';
+
+
+// ? Interfaces are open and type aliases are closed. This means you can extend an interface by declaring it a second time. They both support extending other interfaces and types. Type aliases do this via intersection types, while interfaces have a keyword.
+
+type BirdType = {
+  wings: 2;
+};
+
+interface BirdInterface {
+  wings: 2;
+}
+
+type Owl = { nocturnal: true } & BirdType;
+type Robin = { nocturnal: false } & BirdInterface;
+
+interface Peacock extends BirdType {
+  colourful: true;
+  flies: false;
+}
+interface Chicken extends BirdInterface {
+  colourful: false;
+  flies: false;
+}
+
+
+// ? Interfaces can be implemented by classes, while type aliases cannot.
+interface Person12 {
+  name: string;
+  greet(): void;
+}
+
+class Employee12 implements Person12 {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  greet() {
+    console.log(`Hello, my name is ${this.name}`);
+  }
+}
+
+let john12 = new Employee12('John');
+john12.greet(); // Outputs: Hello, my name is John
+
+
+// ? Type aliases can use computed properties, while interfaces cannot.
+
+const propName13 = 'age';
+
+type Animal13 = {
+  [propName]: number;
+};
+
+let tiger13: Animal13 = { [propName13]: 5 };
+
+
+//! That said, it's recommended to use interfaces over type aliases. Specifically, because you will get better error messages. TypeScript can provide terser and more focused messages when working with interfaces.
