@@ -1045,3 +1045,264 @@ let tiger13: Animal13 = { [propName13]: 5 };
 
 
 //! That said, it's recommended to use interfaces over type aliases. Specifically, because you will get better error messages. TypeScript can provide terser and more focused messages when working with interfaces.
+
+
+
+// ! *** Tuples ***
+// ? A Tuple is a special type that allows you to create an array where the type of a fixed number of elements is known, but need not be the same - in other words it's an array with fixed length and ordered with fixed types. This is useful when you want to group different types of values together.
+
+let person15: [string, number] = ['john', 25];
+console.log(person15[0]); // Outputs: john
+console.log(person15[1]); // Outputs: 25
+
+let john15: [string, number?] = ['john'];
+
+
+// ? Tuples are useful when you want to return multiple values from a function.
+
+function getPerson(): [string, number] {
+  return ['john', 25];
+}
+
+let randomPerson = getPerson();
+console.log(randomPerson[0]); // Outputs: john
+console.log(randomPerson[1]); // Outputs: 25
+
+
+//? By default, tuples in TypeScript are not read - only.This means you can modify the values of the elements in the tuple. However, TypeScript does provide a way to make tuples read - only using the readonly keyword.
+
+// let susan15: [string, number] = ['susan', 25];
+// susan15[0] = 'bob';
+// susan15.push('some random value');
+// console.log(susan15); // Outputs ['bob', 25, 'some random value']
+
+let susan15: readonly [string, number] = ['susan', 25];
+// susan15[0] = 'bob'; //! Cannot assign to '0' because it is a read-only property
+// susan15.push('some random value'); //! Property 'push' does not exist on type 'readonly [string, number]'
+console.log(susan15); // Outputs ['susan', 25]
+
+
+
+// ! *** Enums ***
+// ? Enums in TypeScript allow us to define a set of named constants. Using enums can make it easier to document intent, or create a set of distinct cases.
+
+enum ServerResponseStatus {
+  Success = 200,
+  Error = 'Error',
+}
+
+interface ServerResponse {
+  result: ServerResponseStatus;
+  data: string[];
+}
+
+function getServerResponse(): ServerResponse {
+  return {
+    result: ServerResponseStatus.Success,
+    data: ['first item', 'second item'],
+  };
+}
+
+const response: ServerResponse = getServerResponse();
+console.log(response); // Outputs {result: 200, data: ['first item', 'second item']}
+
+
+
+// ! Enums - Gotcha : Reverse Mapping
+// ? In a numeric enum, TypeScript creates a reverse mapping from the numeric values to the enum member names. This means that if you assign a numeric value to an enum member, you can use that numeric value anywhere the enum type is expected.
+
+// ? In a string enum, TypeScript does not create a reverse mapping. This means that if you assign a string value to an enum member, you cannot use that string value anywhere the enum type is expected. You must use the enum member itself.
+
+// * enum ServerResponseStatus {
+// *  Success = 'Success',
+// *  Error = 'Error',
+// * }
+
+// * Object.values(ServerResponseStatus).forEach((value) => {
+// *  console.log(value);
+// * });
+// ---------------------------------------------------
+
+
+// enum ServerResponseStatus {
+//   Success = 200,
+//   Error = 500,
+// }
+
+// Object.values(ServerResponseStatus).forEach((value) => {
+//   if (typeof value === 'number') {
+//     console.log(value);
+//   }
+// });
+// ---------------------------------------------------
+
+
+// * enum NumericEnum {
+// *   Member = 1,
+// * }
+
+// * enum StringEnum {
+// *   Member = 'Value',
+// * }
+
+// * let numericEnumValue: NumericEnum = 1; // This is allowed
+// * console.log(numericEnumValue); // 1
+
+// * let stringEnumValue: StringEnum = 'Value'; // This is not allowed
+// --------------------------------------------------
+
+
+// enum ServerResponseStatus {
+//   Success = 'Success',
+//   Error = 'Error',
+// }
+
+// function getServerResponse(): ServerResponse {
+//   return {
+//*     // result: ServerResponseStatus.Success,
+//*     // this will not fly with string enum but ok with number
+//     result: 'Success',
+//     data: ['first item', 'second item'],
+//   };
+// }
+
+
+
+// TODO *** *** Challenge *** ***
+//* 1. Define an enum named UserRole with members Admin, Manager, and Employee.
+
+//* 2. Define a type alias named User1 with properties id (number), name (string), role (UserRole), and contact (a tuple with two elements: email as string and phone as string).
+
+//* 3. Define a function named createUser that takes a User object as its parameter and returns a User1 object.
+
+//* 4. Call the createUser1 function with an object that matches the User1 type, store the result in a variable, and log the variable to the console.
+
+
+// TODO 1. Define an enum named UserRole
+
+enum UserRole {
+  Admin,
+  Manager,
+  Employee,
+}
+
+
+// TODO 2. Define a type alias named User
+
+type User1 = {
+  id: number;
+  name: string;
+  role: UserRole;
+  contact: [string, string]; // Tuple: [email, phone]
+};
+
+
+// TODO 3. Define a function named createUser
+
+function createUser1(user: User1): User1 {
+  return user;
+};
+
+
+// TODO 4. Call the createUser1 function
+
+const user: User1 = createUser1({
+  id: 1,
+  name: 'John Doe',
+  role: UserRole.Admin,
+  contact: ['johndoe@example.com', '123-456-7890'],
+});
+
+console.log(user);
+
+
+
+// ! *** Type Assertion ***
+// ? Type assertion in TypeScript is a way to tell the compiler what the type of an existing variable is. This is especially useful when you know more about the type of a variable than TypeScript does.
+
+let someValue5: any = 'This is a string';
+
+// Using type assertion to treat 'someValue5' as a string
+let strLength: number = (someValue5 as string).length;
+
+type Bird = {
+  name: string;
+};
+
+// Assume we have a JSON string from an API or local file
+let birdString = '{"name": "Eagle"}';
+let dogString = '{"breed": "Poodle"}';
+
+//
+
+// Parse the JSON string into an object
+let birdObject = JSON.parse(birdString);
+let dogObject = JSON.parse(dogString);
+
+// We're sure that the jsonObject is actually a Bird
+let bird = birdObject as Bird;
+let dog = dogObject as Bird;
+
+console.log(bird.name); // Outputs 'Eagle'
+console.log(dog.name); // Outputs undefined
+
+enum Status {
+  Pending = 'pending',
+  Declined = 'declined',
+}
+
+type User5 = {
+  name: string;
+  status: Status;
+};
+// save Status.Pending in the DB as a string
+// retrieve string from the DB
+const statusValue = 'pending';
+
+const user5: User5 = { name: 'john', status: statusValue as Status };
+
+
+
+// ! *** Type 'unknown' ***
+// ? The unknown type in TypeScript is a type-safe counterpart of the any type. It's like saying that a variable could be anything, but we need to perform some type-checking before we can use it.
+
+// ? "error instanceof Error" checks if the error object is an instance of the Error class.
+
+let unknownValue: unknown;
+
+// Assign different types of values to unknownValue
+unknownValue = 'Hello World'; // OK
+unknownValue = [1, 2, 3]; // OK
+unknownValue = 42.3344556; // OK
+
+// unknownValue.toFixed( ); // Error: Object is of type 'unknown'
+
+// Now, let's try to use unknownValue
+if (typeof unknownValue === 'number') {
+  // TypeScript knows that unknownValue is a string in this block
+  console.log(unknownValue.toFixed(2)); // OK - '42.33'
+}
+
+function runSomeCode() {
+  const random = Math.random();
+  if (random < 0.5) {
+    throw new Error('Something went wrong');
+  } else {
+    throw 'some error';
+  }
+}
+
+try {
+  runSomeCode();
+} catch (error) {
+  if (error instanceof Error) {
+    console.log(error.message); // 'Something went wrong'
+  } else {
+    console.log(error); // 'some error'
+    console.log('there was an error...'); // 'there was an error...'
+  }
+}
+
+
+
+// ! *** Type 'never' ***
