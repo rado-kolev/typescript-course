@@ -1351,3 +1351,146 @@ function getColorName(color: Color) {
 console.log(getColorName(Color.Red)); // Red
 console.log(getColorName(Color.Blue)); // Blue
 // console.log(getColorName(Color.Green)); // Green
+
+
+
+
+// ! *** Type Guarding ***
+// ? Type guarding is a term in TypeScript that refers to the ability to narrow down the type of an object within a certain scope. This is usually done using conditional statements that check the type of an object.
+
+// ? In the context of TypeScript, a type guard is some expression that performs a runtime check that guarantees the type in some scope.
+
+
+// TODO *** *** Challenge - "typeof" guard *** ***
+//* 1. Define the function checkValue that takes one parameter value of type ValueType.
+
+//* 2. Inside the function, use an if statement to check if value is of type string. If it is, log value converted to lowercase and then return from the function.
+
+//* 3. If value is not a string, use another if statement to check if value is of type number. If it is, log value formatted to two decimal places and then return from the function.
+
+//* 4. If value is neither a string nor a number, it must be a boolean. Log the string "boolean: " followed by the boolean value.
+
+//* 5. Finally, call the checkValue function with value as the argument.
+
+
+// starter code
+
+type ValueType = string | number | boolean;
+
+let value1: ValueType;
+const random = Math.random();
+value1 = random < 0.33 ? 'Hello' : random < 0.66 ? 123.456 : true;
+
+
+// TODO ***
+
+function checkValue(value: ValueType) {
+  if (typeof value === 'string') {
+    console.log(value.toLowerCase());
+    return;
+  }
+
+  if (typeof value === 'number') {
+    console.log(value.toFixed(2));
+    return;
+  }
+
+  console.log(`boolean: ${value}`);
+}
+
+checkValue(value1);
+
+
+
+
+// TODO *** *** Challenge - equality narrowing and check for property *** ***
+// ? In TypeScript, equality narrowing is a form of type narrowing that occurs when you use equality checks like === or !== in your code.
+
+// starter code
+
+type Dog1 = { type: 'dog'; name: string; bark: () => void };
+type Cat1 = { type: 'cat'; name: string; meow: () => void };
+type Animal1 = Dog1 | Cat1;
+
+
+// *** equality narrowing ***
+
+//* 1. Define a function named makeSound that takes one parameter animal of type Animal.
+
+//* 2. Inside the function, use an if statement to check if animal.type is 'dog'.
+
+//* 3. If animal.type is 'dog', TypeScript knows that animal is a Dog in this block. In this case, call the bark method of animal.
+
+//* 4. If animal.type is not 'dog', TypeScript knows that animal is a Cat in the else block. In this case, call the meow method of animal.
+
+//* 5. Now you can call the makeSound function with an Animal as the argument. The function will call the appropriate method (bark or meow) depending on the type of the animal.
+
+// TODO ***
+
+// function makeSound(animal: Animal1) {
+//   if (animal.type === 'dog') {
+//     animal.bark();
+//   } else {
+//     animal.meow();
+//   }
+// }
+
+
+// *** check for property ***
+
+//* 1. Define a function named makeSound that takes one parameter animal of type Animal.
+
+//* 2. Inside the function, use an if statement with the in operator to check if the bark method exists on the animal object.
+
+//* 3. If the bark method exists on animal, TypeScript knows that animal is a Dog in this block. In this case, call the bark method of animal.
+
+//* 4. If the bark method does not exist on animal, TypeScript knows that animal is a Cat in the else block. In this case, call the meow method of animal.
+
+//* 5. Now you can call the makeSound function with an Animal as the argument. The function will call the appropriate method (bark or meow) depending on the type of the animal.
+
+// TODO ***
+function makeSound(animal: Animal1) {
+  if ('bark' in animal) {
+    // TypeScript knows that `animal` is a Dog in this block
+    animal.bark();
+  } else {
+    // TypeScript knows that `animal` is a Cat in this block
+    animal.meow();
+  }
+}
+
+
+
+
+// TODO *** *** Challenge - "Truthy"/"Falsy" guard *** ***
+// ? In TypeScript, "Truthy"/"Falsy" guard is a simple check for a truthy or falsy value.
+
+//* 1. Define a function named printLength that takes one parameter str which can be of type string, null, or undefined.
+
+//* 2. Inside the function, use an if statement to check if str is truthy. In JavaScript and TypeScript, a truthy value is a value that is considered true when encountered in a Boolean context. All values are truthy unless they are defined as falsy (i.e., except for false, 0, -0, 0n, "", null, undefined, and NaN).
+
+//* 3. If str is truthy, it means it's a string (since null and undefined are falsy). In this case, log the length of str using the length property of the string.
+
+//* 4. If str is not truthy (i.e., it's either null or undefined), log the string 'No string provided'.
+
+//* 5. Now you can call the printLength function with a string, null, or undefined as the argument. The function will print the length of the string if a string is provided, or 'No string provided' otherwise.
+
+
+// TODO ***
+
+function printLength(str: string | null | undefined) {
+  if (str) {
+    console.log(str.length);
+  } else {
+    console.log('No string provided');
+  }
+}
+
+printLength('Hello!'); //* Output: 6
+printLength(null); //* Output: No string provided
+printLength(undefined); //* Output: No string provided
+
+
+
+
+// TODO *** *** Challenge - "instanceof" type guard *** ***
