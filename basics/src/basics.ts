@@ -1494,3 +1494,197 @@ printLength(undefined); //* Output: No string provided
 
 
 // TODO *** *** Challenge - "instanceof" type guard *** ***
+// ? The instanceof type guard is a way in TypeScript to check the specific class or constructor function of an object at runtime. It returns true if the object is an instance of the class or created by the constructor function, and false otherwise.
+
+try {
+  // Some code that may throw an error
+  throw new Error('This is an error');
+} catch (error) {
+  if (error instanceof Error) {
+    console.log('Caught an Error object: ' + error.message);
+  } else {
+    console.log('Caught an unknown error');
+  }
+}
+
+
+//* 1. Start by defining the function using the function keyword followed by the function name, in this case checkInput.
+
+//* 2. Define the function's parameter. The function takes one parameter, input, which can be of type Date or string. This is denoted by input: Date | string.
+
+//* 3. Inside the function, use an if statement to check if the input is an instance of Date. This is done using the instanceof operator.
+
+//* 4. If the input is an instance of Date, return the year part of the date as a string. This is done by calling the getFullYear method on the input and then converting it to a string using the toString method.
+
+//* 5. If the input is not an instance of Date (which means it must be a string), return the input as it is.
+
+//* 6. After defining the function, you can use it by calling it with either a Date or a string as the argument. The function will return the year part of the date if a Date is passed, or the original string if a string is passed.
+
+//* 7. You can store the return value of the function in a variable and then log it to the console to see the result.
+
+
+// TODO ***
+
+function checkInput(input: Date | string): string {
+  if (input instanceof Date) {
+    return input.getFullYear().toString();
+  }
+  return input;
+}
+
+const year = checkInput(new Date());
+const random2 = checkInput('2020-05-05');
+console.log(year);
+console.log(random2);
+
+
+
+
+// TODO *** *** Challenge - Type Predicate *** ***
+// ? A type predicate is a function whose return type is a special kind of type that can be used to narrow down types within conditional blocks.
+
+//* 1. Define the Person and Student types. Student should have a study method and Person should have a login method.
+
+//* 2. Create a function named isStudent that takes a parameter person of type Person.
+
+//* 3. In the function signature, specify a return type that is a type predicate: person is Student.
+
+//* 4. In the function body, use a type assertion to treat person as a Student, and check if the study - method is not undefined. This will return true if person is a Student, and false otherwise.
+
+//* 5. Use the isStudent function in an if statement with person as the argument.
+
+//* 6. In the if block (where isStudent(person) is true), call the study method on person. TypeScript knows that person is a Student in this block, so this is safe.
+
+//* 7. In the else block (where isStudent(person) is false), call the login method on person. This is safe because if person is not a Student, it must be a Person, and all Person objects have a login method.
+
+
+// starter code
+
+type Student3 = {
+  name: string;
+  study: () => void;
+};
+
+type User3 = {
+  name: string;
+  login: () => void;
+};
+
+type Person3 = Student3 | User3;
+
+const randomPerson3 = (): Person3 => {
+  return Math.random() > 0.5
+    ? { name: 'john', study: () => console.log('Studying') }
+    : { name: 'mary', login: () => console.log('Logging in') };
+};
+
+const person3 = randomPerson3();
+
+
+// TODO ***
+
+function isStudent(person3: Person3): person3 is Student3 {
+  // return 'study' in person;
+  return (person3 as Student3).study !== undefined;
+}
+
+// Usage
+
+if (isStudent(person3)) {
+  person3.study(); // This is safe because TypeScript knows that 'person' is a Student.
+} else {
+  person3.login();
+}
+
+
+// TODO *** with type 'never' gotcha
+
+const person4: Person3 = {
+  name: 'anna',
+  study: () => console.log('Studying'),
+  // login: () => console.log('Logging in'),
+};
+// person4;
+function isStudent4(person4: Person3): person4 is Student3 {
+  // return 'study' in person;
+  return (person4 as Student3).study !== undefined;
+}
+
+// Usage
+
+if (isStudent4(person4)) {
+  person4.study(); // This is safe because TypeScript knows that 'person' is a Student.
+} else {
+  // in this case person is type "never"
+  console.log(person4);
+}
+
+
+
+
+// TODO *** *** Challenge - Discriminated Unions and exhaustive check using the never type *** ***
+// ? A discriminated union in TypeScript is a type that can be one of several different types, each identified by a unique literal property (the discriminator), allowing for type-safe handling of each possible variant.
+
+//* 1. Write a reducer function that takes the current state and an action, and returns the new state. The reducer function should use a switch statement or if-else chain on the type property of the action to handle each action type differently.
+
+//* 2. In the default case of the switch statement or the final else clause, perform an exhaustive check by assigning the action to a variable of type never. If there are any action types that haven't been handled, TypeScript will give a compile error.
+
+//* 3. Implement the logic for each action type in the reducer function. This typically involves returning a new state based on the current state and the properties of the action.
+
+//* 4. Use the reducer function in your application to handle actions and update the state.
+
+
+// starter code
+
+// type IncrementAction = {
+//   amount: number;
+//   timestamp: number;
+//   user: string;
+// };
+
+// type DecrementAction = {
+//   amount: number;
+//   timestamp: number;
+//   user: string;
+// };
+
+// type Action = IncrementAction | DecrementAction;
+
+
+// TODO ***
+
+type IncrementAction = {
+  type: 'increment';
+  amount: number;
+  timestamp: number;
+  user: string;
+};
+
+type DecrementAction = {
+  type: 'decrement';
+  amount: number;
+  timestamp: number;
+  user: string;
+};
+
+type Action = IncrementAction | DecrementAction;
+
+function reducer(state: number, action: Action): number {
+  switch (action.type) {
+    case 'increment':
+      return state + action.amount;
+    case 'decrement':
+      return state - action.amount;
+
+    default:
+      const unexpectedAction: never = action;
+      throw new Error(`Unexpected action: ${unexpectedAction}`);
+  }
+}
+
+const newState = reducer(15, {
+  user: 'john',
+  type: 'increment',
+  amount: 5,
+  timestamp: 123456,
+});
