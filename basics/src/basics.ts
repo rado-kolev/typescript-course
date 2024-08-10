@@ -1688,3 +1688,206 @@ const newState = reducer(15, {
   amount: 5,
   timestamp: 123456,
 });
+
+
+
+
+// ! *** Generics - Fundamentals ***
+// ? Generics in TypeScript are a way to create reusable code components that work with a variety of types as opposed to a single one. In other words, generics allow you to write a function or a class that can work with any data type. You can think of generics as a kind of variable for types.
+
+// In TypeScript, you can declare an array using two syntaxes:
+
+// let array1: string[] = ['Apple', 'Banana', 'Mango'];
+// let array2: number[] = [1, 2, 3];
+// let array3: boolean[] = [true, false, true];
+
+let array1: Array<string> = ['Apple', 'Banana', 'Mango'];
+let array2: Array<number> = [1, 2, 3];
+let array3: Array<boolean> = [true, false, true];
+
+
+// ! *** Generics - Create Generic Function and Interface ***
+
+// Define a function the usual way
+function createString(arg: string): string {
+  return arg;
+}
+function createNumber(arg: number): number {
+  return arg;
+}
+
+// Define a generic function
+function genericFunction<T>(arg: T): T {
+  return arg;
+}
+
+const someStringValue = genericFunction<string>('Hello World');
+const someNumberValue = genericFunction<number>(2);
+
+// Define a generic interface
+interface GenericInterface<T> {
+  value: T;
+  getValue: () => T;
+}
+
+const genericString: GenericInterface<string> = {
+  value: 'Hello World',
+  getValue() {
+    return this.value;
+  },
+};
+
+
+
+// ! *** Generics - Promise Example ***
+
+// A Promise in JavaScript (and thus TypeScript) is an object representing the eventual completion or failure of an asynchronous operation.
+
+async function someFunc(): Promise<string> {
+  return 'Hello World';
+}
+
+const result5 = someFunc();
+
+
+
+// ! *** Generics - Generate Array ***
+
+// generate an array of strings
+function generateStringArray(length: number, value: string): string[] {
+  let result: string[] = [];
+  result = Array(length).fill(value);
+  return result;
+}
+
+console.log(generateStringArray(3, 'hello'));
+
+
+// generate an array using generics
+function createArray<T>(length: number, value: T): Array<T> {
+  let result: T[] = [];
+  result = Array(length).fill(value);
+  return result;
+}
+
+let arrayStrings = createArray<string>(3, 'hello'); // ["hello", "hello", "hello"]
+let arrayNumbers = createArray<number>(4, 100); // [100, 100, 100, 100]
+
+console.log(arrayStrings);
+console.log(arrayNumbers);
+
+
+
+// ! *** Generics - Multiple Different Types ***
+
+function pair<T, U>(param1: T, param2: U): [T, U] {
+  return [param1, param2];
+}
+
+// Usage
+let result6 = pair<number, string>(123, 'Hello');
+console.log(result6); // Output: [123, "Hello"]
+
+
+
+// ! *** Generics - Inferred Type and Type Constraints ***
+
+function pair2<T, U>(param1: T, param2: U): [T, U] {
+  return [param1, param2];
+}
+
+// Usage
+let result7 = pair2(123, 'Hello');
+
+//  const [name,setName] = useState('')
+//  const [products,setProducts] = useState<Product[]>([])
+
+// type constraint on the generic type T, generic type can be either a number or a string.
+
+function processValue<T extends number | string>(value: T): T {
+  console.log(value);
+  return value;
+}
+
+processValue('hello');
+processValue(12);
+
+// processValue(true);   //! Error: type 'boolean' is not assignable to parameter of type 'string | number'
+
+
+
+// ! *** Generics - Type Constraints part 2 ***
+
+type Car8 = {
+  brand: string;
+  model: string;
+};
+
+const car8: Car8 = {
+  brand: 'ford',
+  model: 'mustang',
+};
+
+type Product8 = {
+  name: string;
+  price: number;
+};
+
+const product8: Product8 = {
+  name: 'shoes',
+  price: 1.99,
+};
+
+type Student8 = {
+  name: string;
+  age: number;
+};
+
+const student8: Student8 = {
+  name: 'peter',
+  age: 20,
+};
+
+// T extends Student8 is a type constraint on the generic type T. It means that the type T can be any type, but it must be a subtype of Student8 or Student8 itself. In other words, T must have at least the same properties and methods that Student8 has.
+
+// function printName<T extends Student8>(input: T): void {
+//   console.log(input.name);
+// }
+
+// printName(student8);
+
+
+// function printName<T extends Student8 | Product8>(input: T): void {
+//   console.log(input.name);
+// }
+
+// printName(product8);
+
+
+// The extends { name: string } part is a type constraint on T. It means that T can be any type, but it must be an object that has at least a name property of type string.
+// In other words, T must have at least the same properties and methods that { name: string } has.
+
+function printName<T extends { name: string }>(input: T): void {
+  console.log(input.name);
+}
+
+printName(student8);
+printName(product8);
+
+
+
+// ! *** Generics - Default Value ***
+
+// declare default type 'any'
+interface StoreData<T = any> {
+  data: T[];
+}
+
+const storeNumbers: StoreData<number> = {
+  data: [1, 2, 3, 4],
+};
+
+const randomStuff: StoreData = {
+  data: ['random', 1],
+};
+
