@@ -2,6 +2,8 @@
 // ! All credits for this course go to John Smilga: https://github.com/john-smilga
 
 // TODO ----> For contrast comments is used the VS Code extension Better Comments
+
+// ? If needed, for better understanding each section marked with // ! *** NAME *** could be separated in a new file.
 // *****************************************************************************
 
 import { z } from 'zod';
@@ -2024,3 +2026,96 @@ const tours = await fetchData(url);
 tours.map((tour) => {
   console.log(tour.name);
 });
+
+
+
+
+// ! *** Classes ***
+// ? Classes in JavaScript are a blueprint for creating objects. They encapsulate data with code to manipulate that data. Classes in JavaScript support inheritance and can be used to create more complex data structures.
+
+// ? A constructor in a class is a special method that gets called when you create a new instance of the class. It's often used to set the initial state of the object.
+
+// TODO 1. Instance Property / Default Property - The checkedOut property in Book class is an instance property (or member variable). It's not specifically set in the constructor, so it could also be referred to as a default property or a property with a default value.
+
+// TODO 2. ReadOnly modifier
+
+class Book3 {
+  readonly title: string; // TODO 2. Add readonly property
+  author: string;
+  checkedOut: boolean = false; // TODO 1.
+  constructor(title: string, author: string) {
+    this.title = title;
+    this.author = author;
+  }
+}
+
+const deepWork3 = new Book3('deep work ', 'cal newport');
+
+deepWork3.checkedOut = true; // TODO 1. Change the value
+
+console.log(deepWork3);
+
+
+// TODO 3. In TypeScript, if you want to use the shorthand for creating and initializing class properties in the constructor, you need to use public, private, or protected access modifiers.
+
+class Book4 {
+  private checkedOut: boolean = false;
+  constructor(public readonly title: string, public author: string) {}
+}
+
+
+
+// ! *** Classes - Getters and Setters ***
+// ? Getters and setters are special methods in a class that allow you to control how a property is accessed and modified.They are used like properties, not methods, so you don't use parentheses to call them.
+
+class Book5 {
+  private checkedOut: boolean = false;
+  constructor(public readonly title: string, public author: string) {}
+  get info() {
+    return `${this.title} by ${this.author}`;
+  }
+
+  private set checkOut(checkedOut: boolean) {
+    this.checkedOut = checkedOut;
+  }
+  get checkOut() {
+    return this.checkedOut;
+  }
+  public get someInfo() {
+    this.checkOut = true;
+    return `${this.title} by ${this.author}`;
+  }
+}
+
+const deepWork5 = new Book5('Deep Work', 'Cal Newport');
+console.log(deepWork5.info);
+console.log(deepWork5.someInfo);
+
+// deepWork5.checkOut = true;
+console.log(deepWork5.checkOut);
+
+
+
+// ! *** Classes - Implement Interface ***
+// ? In TypeScript, an interface is a way to define a contract for a certain structure of an object. This contract can then be used by a class to ensure it adheres to the structure defined by the interface.
+
+// ? When a class implements an interface, it is essentially promising that it will provide all the properties and methods defined in the interface. If it does not, TypeScript will throw an error at compile time.
+
+interface IPerson {
+  name: string;
+  age: number;
+  greet(): void;
+}
+
+class Person implements IPerson {
+  constructor(public name: string, public age: number) {}
+
+  greet() {
+    console.log(
+      `Hello, my name is ${this.name} and I'm ${this.age} years old.`
+    );
+  }
+}
+
+const hipster = new Person('shakeAndBake', 100);
+hipster.greet();
