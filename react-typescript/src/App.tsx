@@ -4,7 +4,8 @@
 // import Component from './starter/04-events';
 // import Component from './starter/05-challenge';
 // import Component from './starter/06-context/index';
-import Component from './starter/07-reducers';
+// import Component from './starter/07-reducers';
+import Component from './starter/08-fetch-data/index';
 
 function App() {
   return (
