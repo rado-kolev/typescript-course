@@ -2119,3 +2119,9 @@ class Person implements IPerson {
 
 const hipster = new Person('shakeAndBake', 100);
 hipster.greet();
+
+
+
+
+// TODO *** Tasks app ***
+// ? The mini-project was created to practice some of the above concepts. The files are tasks.html in the basics folder, and tasks.css and tasks.ts in the src folder.
