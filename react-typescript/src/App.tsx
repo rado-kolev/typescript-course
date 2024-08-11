@@ -3,7 +3,8 @@
 // import Component from './starter/03-state';
 // import Component from './starter/04-events';
 // import Component from './starter/05-challenge';
-import Component from './starter/06-context/index';
+// import Component from './starter/06-context/index';
+import Component from './starter/07-reducers';
 
 function App() {
   return (
@@ -21,8 +22,6 @@ function App() {
       {/* <Component type='basic' name='eva' />
       <Component type='advanced' name='rambo' email='rambo@rambo.com' /> */}
 
-      
-      {/* Used for context */}
 
       <Component />
     </main>
