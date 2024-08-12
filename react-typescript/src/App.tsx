@@ -6,7 +6,8 @@
 // import Component from './starter/06-context/index';
 // import Component from './starter/07-reducers';
 // import Component from './starter/08-fetch-data/index';
-import Component from './starter/09-rtk';
+// import Component from './starter/09-rtk';
+import Component from './starter/10-tasks';
 
 function App() {
   return (
